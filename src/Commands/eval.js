@@ -1,10 +1,11 @@
 module.exports = class Eval extends (require('../Structures/Commands')) {
-    constructor(client) {
-        super(client, {
+    constructor() {
+        super({
             name: "eval",
             description: "Evals some code!",
             usage: "eval <code>",
-            owner: true
+            owner: true,
+            aliases: ["e"]
         })
     }
 
@@ -15,6 +16,10 @@ module.exports = class Eval extends (require('../Structures/Commands')) {
         } catch (e) {
             evaled = e
         }
-        msg.send(evaled ? evaled : "undefined")
+        try {
+            msg.send(evaled)
+        } catch {
+            msg.send("undefined")
+        }
     }
 }

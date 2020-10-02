@@ -1,5 +1,5 @@
 module.exports = class Command {
-    constructor(client, {
+    constructor({
         name = null,
         description = "No description provided",
         category = "No category",
@@ -7,7 +7,6 @@ module.exports = class Command {
         owner = false,
         aliases = new Array()
     }) {
-        this.client = client
         this.owner = owner
         this.help = {
             name,

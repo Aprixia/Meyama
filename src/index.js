@@ -25,21 +25,13 @@ module.exports = class RoleManagerClient extends Discord.Client {
         }
         return guildStats
     }
-    findCommand(c) {
-        try {
-            this.commands.get(c)
-            return true
-        } catch {
-            return false
-        }
-    }
     message(m) {
         if (m.author.bot || m.webhookId || !m.guild) return;
         const p = "rm-";
         if (!m.content.toLowerCase().startsWith(p.toLowerCase())) return;
         const cont = m.content.slice(p.length).trim().split(' ')
-        if (!this.findCommand(cont[0].toLowerCase())) return;
-        const c = this.commands.get(cont[0].toLowerCase())
+        const c = this.commands.get(cont[0]) || this.commands.get(this.aliases.get(cont[0]))
+        if (!c) return;
         if (c.owner) {
             if (m.author.id !== this.config.ownerID) return;
         }

@@ -1,6 +1,6 @@
 module.exports = class Ping extends (require('../Structures/Commands')) {
-    constructor(client) {
-        super(client, {
+    constructor() {
+        super({
             name: "ping",
             description: "Shows a ping!"
         })
