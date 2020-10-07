@@ -8,4 +8,11 @@ module.exports = class Help extends (require('../Structures/Commands')) {
             aliases: ["e"]
         })
     }
+
+    async run(msg) {
+        let emb = new (require('../Utils/Embeds'))()
+        emb.author("Role Manager", msg.client.user.avatarURL())
+            .title("Help Command")
+        msg.send(emb)
+    }
 }
