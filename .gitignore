@@ -1,1 +1,4 @@
 config.json
+node_modules
+Meyama.sqlite
+json.sqlite

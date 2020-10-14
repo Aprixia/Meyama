@@ -7,6 +7,13 @@ module.exports = class Command {
         owner = false,
         aliases = new Array()
     }) {
-        Object.assign({ name, description, category, usage, owner, aliases }, this)
+        this.help = {
+            name,
+            description,
+            category,
+            usage,
+            owner,
+            aliases
+        }
     }
 }

@@ -1,18 +1,21 @@
-module.exports = class Help extends (require('../Structures/Commands')) {
+const cmds = require('../Structures/Commands')
+module.exports = class Help extends cmds {
     constructor() {
         super({
             name: "help",
-            description: "Evals some code!",
-            usage: "eval <code>",
-            owner: true,
-            aliases: ["e"]
+            description: "ends the help menu of Meyama!",
+            usage: "help [command name]",
+            aliases: ["h"]
         })
     }
 
     async run(msg) {
-        let emb = new (require('../Utils/Embeds'))()
-        emb.author("Role Manager", msg.client.user.avatarURL())
-            .title("Help Command")
-        msg.send(emb)
+        let help = ""
+        msg.client.commands.forEach(c => {
+            if (c.help.owner) { } else {
+                help += `**${c.help.name}**:\n> **Description:** ${c.help.description}\n> **Usage:** ${c.help.usage}\n> **Aliases:** ${c.help.aliases.join(', ') || "None"}\n\n`
+            }
+        })
+        msg.send(`Hewwo~ I am Meyama, a cute role manager bot! ^-^ Here are all my commands:\n${help}`)
     }
 }

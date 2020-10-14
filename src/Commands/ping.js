@@ -1,4 +1,5 @@
-module.exports = class Ping extends (require('../Structures/Commands')) {
+const cmds = require('../Structures/Commands')
+module.exports = class Ping extends cmds {
     constructor() {
         super({
             name: "ping",

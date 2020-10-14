@@ -1,5 +1,5 @@
 const Discord = require('discord.js')
-module.exports = class RoleManagerClient extends Discord.Client {
+module.exports = class MeyamaClient extends Discord.Client {
     /**
     * Constructs the client
     * @param {String} token Your bot token
@@ -14,6 +14,7 @@ module.exports = class RoleManagerClient extends Discord.Client {
         require("./setup/Message")()
         this.config = require('../config.json')
         this.commands = new Map(), this.aliases = new Map()
+        this.db = new (require("quick.db-plus")).db("Meyama")
         new (require("./setup/loadCommands"))(this)
     }
     getGuild(id) {
@@ -27,8 +28,8 @@ module.exports = class RoleManagerClient extends Discord.Client {
     }
     message(m) {
         if (m.author.bot || m.webhookId || !m.guild) return;
-        const p = "rm-";
-        if (!m.content.toLowerCase().startsWith(p.toLowerCase())) return;
+        const p = this.db.get("prefix." + m.guild.id) || ".";
+        if (!m.content.toLowerCase().startsWith(p));
         const cont = m.content.slice(p.length).trim().split(' ')
         const c = this.commands.get(cont[0]) || this.commands.get(this.aliases.get(cont[0]))
         if (!c) return;
