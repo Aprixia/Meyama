@@ -29,7 +29,7 @@ module.exports = class MeyamaClient extends Discord.Client {
     message(m) {
         if (m.author.bot || m.webhookId || !m.guild) return;
         const p = this.db.get("prefix." + m.guild.id) || ".";
-        if (!m.content.toLowerCase().startsWith(p));
+        if (!m.content.toLowerCase().startsWith(p)) return;
         const cont = m.content.slice(p.length).trim().split(' ')
         const c = this.commands.get(cont[0]) || this.commands.get(this.aliases.get(cont[0]))
         if (!c) return;
