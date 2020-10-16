@@ -2,7 +2,7 @@ module.exports = () => {
     const { Structures } = require("discord.js");
 
     Structures.extend("Message", M => class Message extends M {
-        async send(content, options) {
+        async s(content, options) {
             if (typeof content === "string") {
                 if (!options) { options = {}; }
                 options.content = content;

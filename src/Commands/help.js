@@ -16,6 +16,6 @@ module.exports = class Help extends cmds {
                 help += `**${c.help.name}**:\n> **Description:** ${c.help.description}\n> **Usage:** ${c.help.usage}\n> **Aliases:** ${c.help.aliases.join(', ') || "None"}\n\n`
             }
         })
-        msg.send(`Hewwo~ I am Meyama, a cute role manager bot! ^-^ Here are all my commands:\n${help}`)
+        msg.s(`Hewwo~ I am Meyama, a cute role manager bot! ^-^ Here are all my commands:\n${help}`)
     }
 }

@@ -12,9 +12,9 @@ module.exports = class Eval extends cmds {
 
     async run(msg, args) {
         try {
-            msg.send(await eval(args.join(' ')), { code: "js" })
+            msg.s(await eval(args.join(' ')), { code: "js" })
         } catch (e) {
-            msg.send(e)
+            msg.s(e)
         }
     }
 }

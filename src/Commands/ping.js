@@ -8,6 +8,6 @@ module.exports = class Ping extends cmds {
     }
 
     async run(msg) {
-        msg.send(`${msg.client.ws.ping}ms!`)
+        msg.s(`${msg.client.ws.ping}ms!`)
     }
 }
