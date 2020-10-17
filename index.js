@@ -11,7 +11,7 @@ c.on("messageUpdate", (oldMsg, msg) => {
 })
 c.on("guildMemberRemove", (member) => {
     if (!c.db.get(`${member.guild.id}.config.saveRoles`)) return;
-    c.db.set(`${member.guild.id}.${member.user.id}.backupRoles`, member.roles.map(r => r.id))
+    c.db.set(`${member.guild.id}.${member.user.id}.backupRoles`, member.roles.cache.map(r => r.id))
 })
 c.on("guildMemberAdd", (member) => {
     if (!c.db.get(`${member.guild.id}.config.saveRoles`)) return;

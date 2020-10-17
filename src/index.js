@@ -28,11 +28,16 @@ module.exports = class MeyamaClient extends Discord.Client {
     }
     message(m) {
         m.g = m.guild
-        m.u = m.user
         m.m = m.member
         m.c = m.channel
         if (m.author.bot || m.webhookId || !m.guild) return;
-        const p = this.db.get(m.guild.id + ".config.prefix") || ".";
+        if (!this.db.get(`${m.g.id}.setupComplete`)) {
+            if (m.content === `<@${m.client.user.id}>` || m.content === `<@!${m.client.user.id}>`) {
+                m.s("Looks like I'm not ready to be used here, launching my setup...")
+                this.commands.get("setup").run(m)
+            }
+        }
+        const p = this.db.get(m.guild.id + ".config.prefix")
         if (!m.content.toLowerCase().startsWith(p)) return;
         const cont = m.content.slice(p.length).trim().split(' ')
         const c = this.commands.get(cont[0]) || this.commands.get(this.aliases.get(cont[0]))

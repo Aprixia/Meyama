@@ -12,7 +12,8 @@ module.exports = class Eval extends cmds {
 
     async run(msg, args) {
         try {
-            msg.s(await eval(args.join(' ')), { code: "js" })
+            let evaled = await eval(args.join(' '))
+            msg.s(evaled, { code: "js" })
         } catch (e) {
             msg.s(e)
         }
