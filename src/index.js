@@ -33,7 +33,7 @@ module.exports = class MeyamaClient extends Discord.Client {
         if (m.author.bot || m.webhookId || !m.guild) return;
         if (!this.db.get(`${m.g.id}.setupComplete`)) {
             if (m.content === `<@${m.client.user.id}>` || m.content === `<@!${m.client.user.id}>`) {
-                m.s("Looks like I'm not ready to be used here, launching my setup...")
+                m.s("Looks like I'm not ready to be used here, launching my setup...").then(msg => msg.delete({ timeout: 5000 }))
                 this.commands.get("setup").run(m)
             }
         }
