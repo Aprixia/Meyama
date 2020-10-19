@@ -23,3 +23,27 @@ c.on("guildMemberAdd", (member) => {
         } catch { }
     })
 })
+c.on("roleCreate", (role) => {
+/*
+* Check if guild has role log on
+* if yes, get the channel and send some data
+*/
+})
+c.on("roleDelete", (role) => {
+/*
+* Check if guild has role log on
+* if yes, get the channel and send some data
+*/
+})
+c.on("roleUpdate", (role) => {
+/*
+* Check if guild has role log on
+* if yes, get the channel and send some data
+*/
+})
+c.on("guildMemberUpdate", (oldmember, member) => {
+/*
+* Check if guild has role log on
+* if yes, send the role which was added to the user
+*/
+})
