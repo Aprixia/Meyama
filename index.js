@@ -9,20 +9,31 @@ c.on("messageUpdate", (oldMsg, msg) => {
     if (oldMsg.content == msg.content) return;
     c.message(msg)
 })
-c.on("guildMemberRemove", (member) => {
-    if (!c.db.get(`${member.guild.id}.config.saveRoles`)) return;
-    c.db.set(`${member.guild.id}.${member.user.id}.backupRoles`, member.roles.cache.map(r => r.id))
+
+c.on("roleCreate", (role) => {
+/*
+* Check if guild has role log on
+* if yes, get the channel and send some data
+*/
 })
-c.on("guildMemberAdd", (member) => {
-    if (!c.db.get(`${member.guild.id}.config.saveRoles`)) return;
-    let roles = c.db.get(`${member.guild.id}.${member.user.id}.backupRoles`)
-    if (!roles) return;
-    roles.forEach(r => {
-        try {
-            member.roles.add(r)
-        } catch { }
-    })
+c.on("roleDelete", (role) => {
+/*
+* Check if guild has role log on
+* if yes, get the channel and send some data
+*/
 })
+c.on("roleUpdate", (role) => {
+/*
+* Check if guild has role log on
+* if yes, get the channel and send some data
+*/
+})
+c.on("guildMemberUpdate", (oldmember, member) => {
+/*
+* Check if guild has role log on
+* if yes, send the role which was added to the user
+*/
+
 c.on("messageReactionAdd", (reaction, user) => {
     let r = c.db.get(`${reaction.message.guild.id}.rr.${reaction.message.id}.${reaction.emoji.id || reaction.emoji.name}`)
     if (!r) return console.log("not found");
@@ -56,4 +67,5 @@ c.on("messageDeleteBulk", (msgs) => {
         if (!r) return;
         c.db.get(`${msg.guild.id}.rr.${msg.id}`, undefined)
     })
+
 })
