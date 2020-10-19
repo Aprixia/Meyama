@@ -1,3 +1,4 @@
+const { has } = require('lodash')
 const cmds = require('../Structures/Commands')
 module.exports = class Setup extends cmds {
     constructor() {
@@ -7,6 +8,7 @@ module.exports = class Setup extends cmds {
         })
     }
     async run(msg) {
+        if (!msg.m.permissions.has("MANAGE_GUILD")) return msg.s("Woops, you need the Manage Server permission to do this!")
         msg.s("Hiya! Thanks for spending some time for my setup! First thing first, what prefix do you want me to have? **Answer with the prefix u want me to have in the next 30 secs**")
         let c1 = msg.c.createMessageCollector((m) => { return m.author.id === msg.author.id }, { time: 30000 })
         c1.on("collect", async m => {
