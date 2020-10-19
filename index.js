@@ -11,29 +11,29 @@ c.on("messageUpdate", (oldMsg, msg) => {
 })
 
 c.on("roleCreate", (role) => {
-/*
-* Check if guild has role log on
-* if yes, get the channel and send some data
-*/
+    /*
+    * Check if guild has role log on
+    * if yes, get the channel and send some data
+    */
 })
 c.on("roleDelete", (role) => {
-/*
-* Check if guild has role log on
-* if yes, get the channel and send some data
-*/
+    /*
+    * Check if guild has role log on
+    * if yes, get the channel and send some data
+    */
 })
 c.on("roleUpdate", (role) => {
-/*
-* Check if guild has role log on
-* if yes, get the channel and send some data
-*/
+    /*
+    * Check if guild has role log on
+    * if yes, get the channel and send some data
+    */
 })
 c.on("guildMemberUpdate", (oldmember, member) => {
-/*
-* Check if guild has role log on
-* if yes, send the role which was added to the user
-*/
-
+    /*
+    * Check if guild has role log on
+    * if yes, send the role which was added to the user
+    */
+})
 c.on("messageReactionAdd", (reaction, user) => {
     let r = c.db.get(`${reaction.message.guild.id}.rr.${reaction.message.id}.${reaction.emoji.id || reaction.emoji.name}`)
     if (!r) return console.log("not found");
@@ -67,5 +67,4 @@ c.on("messageDeleteBulk", (msgs) => {
         if (!r) return;
         c.db.get(`${msg.guild.id}.rr.${msg.id}`, undefined)
     })
-
 })
