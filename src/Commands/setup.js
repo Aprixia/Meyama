@@ -28,7 +28,7 @@ module.exports = class Setup extends cmds {
         })
     }
     async secondStep(msg) {
-        msg.s("Okay, now into the second step! Do you want me to restore roles to members if they leave the server and re join it? **Please answer with either yes or no int he next 30 secs**")
+        msg.s("Okay, now into the second step! Do you want me to restore roles to members if they leave the server and re join it? **Please answer with either yes or no in the next 30 secs**")
         let c2 = msg.c.createMessageCollector((m) => { return m.author.id === msg.author.id && m.content === "yes" || m.author.id === msg.author.id && m.content === "no" }, { time: 30000 })
         c2.on("collect", async m => {
             if (m.content === "yes") {
@@ -39,7 +39,7 @@ module.exports = class Setup extends cmds {
                 msg.channel.send("Got it, I will **not** give member roles back if they leave and rejoin!").then(m => m.delete({ timeout: 5000 }))
             }
             m.delete()
-            msg.s("Congrats, you finished the setup! You're now able to use me!")
+            this.thirdStep(msg)
             c2.stop()
         })
         c2.on("end", (c) => {
@@ -47,5 +47,39 @@ module.exports = class Setup extends cmds {
             return;
         })
 
+    }
+    async thirdStep(msg) {
+        msg.s("Ok, now into the third step! Would you like to add roles to members when they join? If you do, **please give a role id, else say __no__ in the next 60 seconds**\n\nHow to grab an ID: https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-")
+        let c3 = msg.c.createMessageCollector((m) => { return m.author.id === msg.author.id }, { time: 60000 })
+        c3.on("collect", m => {
+            if (m.mentions.roles.first()) {
+                msg.client.db.set(`${msg.g.id}.config.roleAtJoin`, m.mentions.roles.first().id)
+                msg.channel.send("Cool! I will now add this role to every new member!").then(m => m.delete({ timeout: 5000 }))
+            } else {
+                if (m.content !== "no") return msg.s("Woops, invalid id! Cancelling...")
+                msg.channel.send("Ok! Members will not receive a role when they join!").then(m => m.delete({ timeout: 5000 }))
+            }
+            m.delete()
+            this.fourthStep(msg)
+            c3.stop()
+        })
+        c3.on("end", (c) => {
+            if (c.size === 0) return msg.s("Woops, looks like nothing has been sent in 60 secs, cancelling...");
+            return;
+        })
+    }
+    async fourthStep(msg) {
+        msg.s("We're almost done! This is the last and final step of the setup: Would you like to log everything related to roles in a channel? **If yes, please give a channel ID, else say __no__ in the next 60 seconds**")
+        let c4 = msg.c.createMessageCollector((m) => { return m.author.id === msg.author.id }, { time: 60000 })
+        c4.on("collect", m => {
+            if (msg.guild.channels.cache.has(m.content)) {
+                msg.client.db.set(`${msg.g.id}.config.logChannel`, m.content)
+                msg.channel.send("Okay, i will now log everything regarding roles!")
+            } else {
+                if (m.content !== "no") return msg.s("Woops, invalid id! Cancelling...")
+                msg.channel.send("Ok, no logs for your server!")
+            }
+            msg.s(`Congrats, you finished the setup! You are now free of using all my commands! Get a list of commands with ${msg.client.db.get(`${msg.g.id}.config.prefix`)}help`)
+        })
     }
 }

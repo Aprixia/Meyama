@@ -11,7 +11,7 @@ module.exports = class ReactionRoles extends cmds {
 
     async run(msg) {
         if (!msg.m.permissions.has("MANAGE_GUILD")) return msg.s("Woops, you need the Manage Server permission to do this!")
-        msg.s("Hai! So, you wanna setup a reaction role with me? Nice! First of all, I need a channel ID so i'll be able to fetch a messge from it. **Please provide one in the next minute**\n\nHow to grab a message ID: https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-")
+        msg.s("Hai! So, you wanna setup a reaction role with me? Nice! First of all, I need a channel ID so i'll be able to fetch a messge from it. **Please provide one in the next minute**\n\nHow to grab an ID: https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-")
         let c0 = msg.c.createMessageCollector((m) => { return m.author.id === msg.author.id }, { time: 60000 })
         c0.on("collect", (m0) => {
             if (!msg.guild.channels.cache.get(m0.content)) return msg.s("Woopsie doopsie, I can not find this channel! Cancelling...")
