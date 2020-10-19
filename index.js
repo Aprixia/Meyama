@@ -35,19 +35,19 @@ c.on("guildMemberUpdate", (oldmember, member) => {
     */
 })
 c.on("messageReactionAdd", (reaction, user) => {
-    let r = c.db.get(`${reaction.message.guild.id}.rr.${reaction.message.id}.${reaction.emoji.id || reaction.emoji.name}`)
+    let r = c.db.get(`${reaction.message.guild ? reaction.message.guild.id : reaction.guild}.rr.${reaction.message.id ? reaction.message.id : reaction.message}.${reaction.emoji.id || reaction.emoji.name}`)
     if (!r) return;
     if (user.bot) return;
     let member = reaction.message.guild.members.cache.get(user.id)
     member.roles.add(r)
 })
 c.on("messageReactionRemove", (reaction, user) => {
-    let r = c.db.get(`${reaction.message.guild.id}.rr.${reaction.message.id}.${reaction.emoji.id || reaction.emoji.name}`)
+    let r = c.db.get(`${reaction.message.guild ? reaction.message.guild.id : reaction.guild}.rr.${reaction.message.id ? reaction.message.id : reaction.message}.${reaction.emoji.id || reaction.emoji.name}`)
     if (!r) return;
     if (!reaction.me) {
-        c.db.set(`${reaction.message.guild.id}.rr.${reaction.message.id}`, undefined)
+        c.db.set(`${reaction.message.guild ? reaction.message.guild.id : reaction.guild}.rr.${reaction.message.id ? reaction.message.id : reaction.message}`, undefined)
     } else {
-        let member = reaction.message.guild.members.cache.get(user.id)
+        let member = reaction.message.guild.members.cache.get(user.id) || c.guilds.cache.get(reaction.guild).members.cache.get(user.id)
         member.roles.remove(r)
     }
 })
@@ -69,11 +69,10 @@ c.on("messageDeleteBulk", (msgs) => {
     })
 })
 c.on("raw", (packet) => {
-    if (!['MESSAGE_REACTION_ADD', 'MESSAGE_REACTION_REMOVE'].includes(packet.t)) return;
     if (packet.t === 'MESSAGE_REACTION_ADD') {
-        c.emit('messageReactionAdd', reaction, c.users.cache.get(packet.d.user_id));
+        c.emit('messageReactionAdd', { message: packet.d.message_id, guild: packet.d.guild_id, emoji: packet.d.emoji }, c.users.cache.get(packet.d.user_id));
     }
     if (packet.t === 'MESSAGE_REACTION_REMOVE') {
-        clearTimeout.emit('messageReactionRemove', reaction, c.users.cache.get(packet.d.user_id));
+        c.emit('messageReactionRemove', { message: packet.d.message_id, guild: packet.d.guild_id, emoji: packet.d.emoji }, c.users.cache.get(packet.d.user_id));
     }
 })
