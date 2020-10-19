@@ -1,4 +1,4 @@
-let c = new (require('./src/index'))(require('./config.json').token, { shards: [0] })
+let c = new (require('./src/index'))(require('./config.json').token, { shards: [0], fetchAllUsers: true })
 c.on("ready", () => {
     console.log("Ready!")
 });
@@ -34,14 +34,16 @@ c.on("guildMemberUpdate", (oldmember, member) => {
     * if yes, send the role which was added to the user
     */
 })
-c.on("messageReactionAdd", (reaction, user) => {
+
+function radd(reaction, user) {
     let r = c.db.get(`${reaction.message.guild ? reaction.message.guild.id : reaction.guild}.rr.${reaction.message.id ? reaction.message.id : reaction.message}.${reaction.emoji.id || reaction.emoji.name}`)
     if (!r) return;
     if (user.bot) return;
     let member = reaction.message.guild.members.cache.get(user.id)
     member.roles.add(r)
-})
-c.on("messageReactionRemove", (reaction, user) => {
+}
+
+function rrem(reaction, user) {
     let r = c.db.get(`${reaction.message.guild ? reaction.message.guild.id : reaction.guild}.rr.${reaction.message.id ? reaction.message.id : reaction.message}.${reaction.emoji.id || reaction.emoji.name}`)
     if (!r) return;
     if (!reaction.me) {
@@ -50,6 +52,12 @@ c.on("messageReactionRemove", (reaction, user) => {
         let member = reaction.message.guild.members.cache.get(user.id) || c.guilds.cache.get(reaction.guild).members.cache.get(user.id)
         member.roles.remove(r)
     }
+}
+c.on("messageReactionAdd", (reaction, user) => {
+    radd(reaction, user)
+})
+c.on("messageReactionRemove", (reaction, user) => {
+    rrem(reaction, user)
 })
 c.on("messageReactionRemoveAll", (msg) => {
     let r = c.db.get(`${msg.guild.id}.rr.${msg.id}`)
@@ -68,11 +76,13 @@ c.on("messageDeleteBulk", (msgs) => {
         c.db.get(`${msg.guild.id}.rr.${msg.id}`, undefined)
     })
 })
-c.on("raw", (packet) => {
-    if (packet.t === 'MESSAGE_REACTION_ADD') {
-        c.emit('messageReactionAdd', { message: packet.d.message_id, guild: packet.d.guild_id, emoji: packet.d.emoji }, c.users.cache.get(packet.d.user_id));
-    }
-    if (packet.t === 'MESSAGE_REACTION_REMOVE') {
-        c.emit('messageReactionRemove', { message: packet.d.message_id, guild: packet.d.guild_id, emoji: packet.d.emoji }, c.users.cache.get(packet.d.user_id));
+c.on("raw", (p) => {
+    switch (p.t) {
+        case "MESSAGE_REACTION_ADD":
+            radd({ message: p.d.message_id, guild: p.d.guild_id, emoji: p.d.emoji }, c.users.cache.get(p.d.user_id))
+            break;
+        case "MESSAGE_REACTION_REMOVE":
+            rrem({ message: p.d.message_id, guild: p.d.guild_id, emoji: p.d.emoji }, c.users.cache.get(p.d.user_id))
+            break;
     }
 })
