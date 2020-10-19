@@ -15,6 +15,10 @@ c.on("roleCreate", (role) => {
     * Check if guild has role log on
     * if yes, get the channel and send some data
     */
+    let logChannel = c.db.get(`${msg.g.id}.config.logChannel`) //returns a channel id
+    if (!logChannel) return;
+    //so you have to do role logs
+    //you have comments on what to do above
 })
 c.on("roleDelete", (role) => {
     /*
@@ -35,15 +39,15 @@ c.on("guildMemberUpdate", (oldmember, member) => {
     */
 })
 
-function radd(reaction, user) {
+c.on("messageReactionAdd", (reaction, user) => {
     let r = c.db.get(`${reaction.message.guild ? reaction.message.guild.id : reaction.guild}.rr.${reaction.message.id ? reaction.message.id : reaction.message}.${reaction.emoji.id || reaction.emoji.name}`)
-    if (!r)return;
+    if (!r) return;
     if (user.bot) return;
     let member = reaction.guild ? c.guilds.cache.get(reaction.guild).members.cache.get(user.id) : reaction.message.guild.members.cache.get(user.id)
     member.roles.add(r)
-}
+})
 
-function rrem(reaction, user) {
+c.on("messageReactionRemove", (reaction, user) => {
     let r = c.db.get(`${reaction.message.guild ? reaction.message.guild.id : reaction.guild}.rr.${reaction.message.id ? reaction.message.id : reaction.message}.${reaction.emoji.id || reaction.emoji.name}`)
     if (!r) return;
     if (!reaction.me) {
@@ -52,37 +56,40 @@ function rrem(reaction, user) {
         let member = reaction.guild ? c.guilds.cache.get(reaction.guild).members.cache.get(user.id) : reaction.message.guild.members.cache.get(user.id)
         member.roles.remove(r)
     }
-}
-c.on("messageReactionAdd", (reaction, user) => {
-    radd(reaction, user)
 })
-c.on("messageReactionRemove", (reaction, user) => {
-    rrem(reaction, user)
-})
+
 c.on("messageReactionRemoveAll", (msg) => {
     let r = c.db.get(`${msg.guild.id}.rr.${msg.id}`)
     if (!r) return;
     c.db.set(`${msg.guild.id}.rr.${msg.id}`, undefined)
 })
-c.on("messageDelete", (m) => {
-    let r = c.db.get(`${m.guild.id}.rr.${m.id}`)
-    if (!r) return;
-    c.db.get(`${m.guild.id}.rr.${m.id}`, undefined)
-})
-c.on("messageDeleteBulk", (msgs) => {
-    msgs.forEach(msg => {
-        let r = c.db.get(`${msg.guild.id}.rr.${msg.id}`)
-        if (!r) return;
-        c.db.get(`${msg.guild.id}.rr.${msg.id}`, undefined)
-    })
-})
+
 c.on("raw", (p) => {
     switch (p.t) {
         case "MESSAGE_REACTION_ADD":
-            radd({ message: p.d.message_id, guild: p.d.guild_id, emoji: p.d.emoji }, c.users.cache.get(p.d.user_id))
+            c.emit("messageReactionAdd", { message: p.d.message_id, guild: p.d.guild_id, emoji: p.d.emoji }, c.users.cache.get(p.d.user_id))
             break;
         case "MESSAGE_REACTION_REMOVE":
-            rrem({ message: p.d.message_id, guild: p.d.guild_id, emoji: p.d.emoji }, c.users.cache.get(p.d.user_id))
+            c.emit("messageReactionAdd", { message: p.d.message_id, guild: p.d.guild_id, emoji: p.d.emoji }, c.users.cache.get(p.d.user_id))
             break;
     }
+})
+
+c.on("guildMemberRemove", (member) => {
+    if (!c.db.get(`${member.guild.id}.config.saveRoles`)) return;
+    c.db.set(`${member.guild.id}.${member.user.id}.backupRoles`, member.roles.cache.map(r => r.id))
+})
+
+c.on("guildMemberAdd", (member) => {
+    if (!c.db.get(`${member.guild.id}.config.saveRoles`) || !c.db.get(`${member.guild.id}.config.roleAtJoin`)) return;
+    try {
+        member.roles.add(c.guilds.get(`${member.guild.id}.config.roleAtJoin`))
+    } catch { }
+    let roles = c.db.get(`${member.guild.id}.${member.user.id}.backupRoles`)
+    if (!roles) return;
+    roles.forEach(r => {
+        try {
+            member.roles.add(r)
+        } catch { }
+    })
 })
