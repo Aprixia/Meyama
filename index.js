@@ -68,3 +68,12 @@ c.on("messageDeleteBulk", (msgs) => {
         c.db.get(`${msg.guild.id}.rr.${msg.id}`, undefined)
     })
 })
+c.on("raw", (packet) => {
+    if (!['MESSAGE_REACTION_ADD', 'MESSAGE_REACTION_REMOVE'].includes(packet.t)) return;
+    if (packet.t === 'MESSAGE_REACTION_ADD') {
+        c.emit('messageReactionAdd', reaction, c.users.cache.get(packet.d.user_id));
+    }
+    if (packet.t === 'MESSAGE_REACTION_REMOVE') {
+        clearTimeout.emit('messageReactionRemove', reaction, c.users.cache.get(packet.d.user_id));
+    }
+})
