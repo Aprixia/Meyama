@@ -36,7 +36,7 @@ c.on("guildMemberUpdate", (oldmember, member) => {
 })
 c.on("messageReactionAdd", (reaction, user) => {
     let r = c.db.get(`${reaction.message.guild.id}.rr.${reaction.message.id}.${reaction.emoji.id || reaction.emoji.name}`)
-    if (!r) return console.log("not found");
+    if (!r) return;
     if (user.bot) return;
     let member = reaction.message.guild.members.cache.get(user.id)
     member.roles.add(r)
