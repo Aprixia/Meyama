@@ -107,7 +107,7 @@ c.on("raw", (p) => {
             break;
         case "MESSAGE_REACTION_REMOVE":
             c.emit(
-                "messageReactionAdd", { message: p.d.message_id, guild: p.d.guild_id, emoji: p.d.emoji },
+                "messageReactionRemove", { message: p.d.message_id, guild: p.d.guild_id, emoji: p.d.emoji },
                 c.users.cache.get(p.d.user_id)
             );
             break;
