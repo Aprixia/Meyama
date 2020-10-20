@@ -53,42 +53,30 @@ c.on("guildMemberUpdate", (oldmember, member) => {
 
 c.on("messageReactionAdd", (reaction, user) => {
     let r = c.db.get(
-        `${
-			reaction.message.guild ? reaction.message.guild.id : reaction.guild
-		}.rr.${reaction.message.id ? reaction.message.id : reaction.message}.${
+        `${reaction.message.guild.id}.rr.${reaction.message.id}.${
 			reaction.emoji.id || reaction.emoji.name
 		}`
     );
     if (!r) return;
     if (user.bot) return;
-    let member = reaction.guild ?
-        c.guilds.cache.get(reaction.guild).members.cache.get(user.id) :
-        reaction.message.guild.members.cache.get(user.id);
+    let member = c.guilds.cache
+        .get(reaction.message.guild.id)
+        .members.cache.get(user.id);
     member.roles.add(r);
 });
 
 c.on("messageReactionRemove", (reaction, user) => {
     let r = c.db.get(
-        `${
-			reaction.message.guild ? reaction.message.guild.id : reaction.guild
-		}.rr.${reaction.message.id ? reaction.message.id : reaction.message}.${
+        `${reaction.message.guild.id}.rr.${reaction.message.id}.${
 			reaction.emoji.id || reaction.emoji.name
 		}`
     );
     if (!r) return;
-    if (!reaction.me) {
-        c.db.set(
-            `${
-				reaction.message.guild ? reaction.message.guild.id : reaction.guild
-			}.rr.${reaction.message.id ? reaction.message.id : reaction.message}`,
-            undefined
-        );
-    } else {
-        let member = reaction.guild ?
-            c.guilds.cache.get(reaction.guild).members.cache.get(user.id) :
-            reaction.message.guild.members.cache.get(user.id);
-        member.roles.remove(r);
-    }
+    if (user.bot) return;
+    let member = c.guilds.cache
+        .get(reaction.message.guild.id)
+        .members.cache.get(user.id);
+    member.roles.remove(r);
 });
 
 c.on("messageReactionRemoveAll", (msg) => {
@@ -101,16 +89,35 @@ c.on("raw", (p) => {
     switch (p.t) {
         case "MESSAGE_REACTION_ADD":
             c.emit(
-                "messageReactionAdd", { message: p.d.message_id, guild: p.d.guild_id, emoji: p.d.emoji },
+                "messageReactionAdd", {
+                    message: {
+                        id: p.d.message_id,
+                        guild: { id: p.d.guild_id },
+                    },
+                    emoji: p.d.emoji,
+                },
                 c.users.cache.get(p.d.user_id)
             );
             break;
         case "MESSAGE_REACTION_REMOVE":
             c.emit(
-                "messageReactionRemove", { message: p.d.message_id, guild: p.d.guild_id, emoji: p.d.emoji },
+                "messageReactionRemove", {
+                    message: {
+                        id: p.d.message_id,
+                        guild: { id: p.d.guild_id },
+                    },
+                    emoji: p.d.emoji,
+                },
                 c.users.cache.get(p.d.user_id)
             );
             break;
+        case "MESSAGE_REACTION_REMOVE_ALL":
+            c.emit("messageReactionRemoveAll", {
+                id: p.d.message_id,
+                guild: {
+                    id: p.d.guild_id,
+                },
+            });
     }
 });
 
