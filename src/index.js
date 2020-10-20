@@ -41,7 +41,7 @@ module.exports = class MeyamaClient extends Discord.Client {
 				).then((msg) => msg.delete({ timeout: 5000 }));
 				this.commands.get("setup").run(m);
 			} else {
-				msg.s(
+				m.s(
 					`My prefix here is \`${this.db.get(m.guild.id + ".config.prefix")}\``
 				);
 			}
