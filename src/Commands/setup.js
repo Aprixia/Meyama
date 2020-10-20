@@ -131,13 +131,18 @@ module.exports = class Setup extends cmds {
 		c4.on("collect", (m) => {
 			if (msg.guild.channels.cache.has(m.content)) {
 				msg.client.db.set(`${msg.g.id}.config.logChannel`, m.content);
-				msg.channel.send("Okay, i will now log everything regarding roles!");
+				msg.channel
+					.send("Okay, i will now log everything regarding roles!")
+					.then((m) => m.delete({ timeout: 5000 }));
 			} else {
 				if (m.content !== "no")
 					return msg.s("Woops, invalid id! Cancelling...");
-				msg.channel.send("Ok, no logs for your server!");
+				msg.channel
+					.send("Ok, no logs for your server!")
+					.then((m) => m.delete({ timeout: 5000 }));
 			}
 			msg.client.db.set(`${msg.g.id}.setupComplete`, true);
+			m.delete()
 			msg.s(
 				`Congrats, you finished the setup! You are now free of using all my commands! Get a list of commands with ${msg.client.db.get(
 					`${msg.g.id}.config.prefix`
