@@ -4,14 +4,14 @@ module.exports = class Command {
         description = "No description provided",
         usage = "No specific usage",
         owner = false,
-        aliases = new Array()
+        aliases = new Array(),
     }) {
         this.help = {
             name,
             description,
             usage,
             owner,
-            aliases
-        }
+            aliases,
+        };
     }
-}
+};

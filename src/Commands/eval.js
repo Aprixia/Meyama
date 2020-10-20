@@ -1,4 +1,4 @@
-const cmds = require('../Structures/Commands')
+const cmds = require("../Structures/Commands");
 module.exports = class Eval extends cmds {
     constructor() {
         super({
@@ -6,16 +6,16 @@ module.exports = class Eval extends cmds {
             description: "Evals some code!",
             usage: "eval <code>",
             owner: true,
-            aliases: ["e"]
-        })
+            aliases: ["e"],
+        });
     }
 
     async run(msg, args) {
         try {
-            let evaled = await eval(args.join(' '))
-            msg.s(evaled, { code: "js" })
+            let evaled = await eval(args.join(" "));
+            msg.s(evaled, { code: "js" });
         } catch (e) {
-            msg.s(e)
+            msg.s(e);
         }
     }
-}
+};
