@@ -19,13 +19,11 @@ module.exports = class ReactionRoles extends cmds {
 			return msg.s(
 				"To be able to do reaction roles, i need the following permissions: ``MANAGE_MESSAGES``, ``ADD_REACTIONS``"
 			);
-		if (!msg.g.me.permissions.has("ADMINISTRATOR")) {
-			msg.c
-				.send(
-					"**IMPORTANT:**To be sure that reaction roles works fine, please make sure that I have the highest role on this server, else I will not be able to give roles to members that have a role higher than me!"
-				)
-				.then((msh) => msh.delete({ timeout: 20000 }));
-		}
+		msg.channel
+			.send(
+				"**IMPORTANT:**\nTo be sure that reaction roles works fine, please make sure that I have the highest role on this server, else I will not be able to give roles to members that have a role higher than me!"
+			)
+			.then((msh) => msh.delete({ timeout: 20000 }));
 		msg.s(
 			"Hai! So, you wanna setup a reaction role with me? Nice! First of all, I need a channel so i'll be able to fetch a messge from it. **Please provide a channel ID in the next minute**"
 		);
