@@ -82,7 +82,7 @@ module.exports = class Setup extends cmds {
 	}
 	async thirdStep(msg) {
 		msg.s(
-			"Ok, now into the third step! Would you like to add roles to members when they join? If you do, **please give a role id, else say __no__ in the next 60 seconds**\n\nHow to grab an ID: https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-"
+			"Ok, now into the third and final step! Would you like to add roles to members when they join? If you do, **please mention a role, else say __no__ in the next 60 seconds**\n\nHow to grab an ID: https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-"
 		);
 		let c3 = msg.c.createMessageCollector(
 			(m) => {
@@ -107,49 +107,10 @@ module.exports = class Setup extends cmds {
 					.then((m) => m.delete({ timeout: 5000 }));
 			}
 			m.delete();
-			this.fourthStep(msg);
+			msg.s("Congwatulations, you finiswhed the setwup!  You can now use me~");
 			c3.stop();
 		});
 		c3.on("end", (c) => {
-			if (c.size === 0)
-				return msg.s(
-					"Woops, looks like nothing has been sent in 60 secs, cancelling..."
-				);
-			return;
-		});
-	}
-	async fourthStep(msg) {
-		msg.s(
-			"We're almost done! This is the last and final step of the setup: Would you like to log everything related to roles in a channel? **If yes, please give a channel ID, else say __no__ in the next 60 seconds**"
-		);
-		let c4 = msg.c.createMessageCollector(
-			(m) => {
-				return m.author.id === msg.author.id;
-			},
-			{ time: 60000 }
-		);
-		c4.on("collect", (m) => {
-			if (msg.guild.channels.cache.has(m.content)) {
-				msg.client.db.set(`${msg.g.id}.config.logChannel`, m.content);
-				msg.channel
-					.send("Okay, i will now log everything regarding roles!")
-					.then((m) => m.delete({ timeout: 5000 }));
-			} else {
-				if (m.content !== "no")
-					return msg.s("Woops, invalid id! Cancelling...");
-				msg.channel
-					.send("Ok, no logs for your server!")
-					.then((m) => m.delete({ timeout: 5000 }));
-			}
-			msg.client.db.set(`${msg.g.id}.setupComplete`, true);
-			m.delete()
-			msg.s(
-				`Congrats, you finished the setup! You are now free of using all my commands! Get a list of commands with ${msg.client.db.get(
-					`${msg.g.id}.config.prefix`
-				)}help`
-			);
-		});
-		c4.on("end", (c) => {
 			if (c.size === 0)
 				return msg.s(
 					"Woops, looks like nothing has been sent in 60 secs, cancelling..."

@@ -21,32 +21,6 @@ c.on("message", (msg) => {
 c.on("messageUpdate", (oldMsg, msg) => {
 	if (oldMsg.content == msg.content) return;
 	c.message(msg);
-}); //change the config for prettier in the settings if you want
-//done
-c.on("roleCreate", (role) => {
-	//bruh
-	/*
-	 * Check if guild has role log on
-	 * if yes, get the channel and send some data
-	 */
-});
-c.on("roleDelete", (role) => {
-	/*
-	 * Check if guild has role log on
-	 * if yes, get the channel and send some data
-	 */
-});
-c.on("roleUpdate", (role) => {
-	/*
-	 * Check if guild has role log on
-	 * if yes, get the channel and send some data
-	 */
-});
-c.on("guildMemberUpdate", (oldmember, member) => {
-	/*
-	 * Check if guild has role log on
-	 * if yes, send the role which was added to the user
-	 */
 });
 
 c.on("messageReactionAdd", (reaction, user) => {

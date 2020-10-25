@@ -17,9 +17,10 @@
     },
     "homepage": "https://github.com/lumap/Meyama#readme",
     "dependencies": {
-        "discord.js": "^12.3.1",
+        "discord.js": "^12.4.0",
         "fs": "0.0.1-security",
         "lodash": "^4.17.20",
-        "quick.db-plus": "0.1.3-build"
+        "quick.db-plus": "0.1.3-build",
+        "typescript": "^4.0.3"
     }
 }
