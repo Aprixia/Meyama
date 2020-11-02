@@ -14,9 +14,7 @@ module.exports = class Info extends cmds {
 				fields: [
 					{
 						name: "Who made me?",
-						value: `It's ${
-							msg.client.users.fetch("635383782576357407").tag
-						}! What a cutie~`,
+						value: `It's Lumap#0001! What a cutie~`,
 						inline: true,
 					},
 					{
@@ -31,8 +29,7 @@ module.exports = class Info extends cmds {
 					},
 					{
 						name: "What am I supposed to do as a bot?",
-						value:
-							"I'm a role manager bot, so i help you manage roles for your server! I hope you enjoy me ^~^",
+						value: "I'm a role manager bot, so i help you manage roles for your server! I hope you enjoy me ^~^",
 						inline: true,
 					},
 				],
