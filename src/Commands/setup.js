@@ -9,7 +9,9 @@ module.exports = class Setup extends cmds {
 	}
 	async run(msg) {
 		if (!msg.m.permissions.has("MANAGE_GUILD"))
-			return msg.s("Woops, you need the Manage Server permission to do this!");
+			return msg.s(
+				"Woops, you need the Manage Server permission to do this!"
+			);
 		msg.s(
 			"Hiya! Thanks for spending some time for my setup! First thing first, what prefix do you want me to have? **Answer with the prefix u want me to have in the next 30 secs**"
 		);
@@ -107,7 +109,10 @@ module.exports = class Setup extends cmds {
 					.then((m) => m.delete({ timeout: 5000 }));
 			}
 			m.delete();
-			msg.s("Congwatulations, you finiswhed the setwup!  You can now use me~");
+			msg.client.db.set(`${msg.g.id}.setupComplete`, true);
+			msg.s(
+				"Congwatulations, you finiswhed the setwup!  You can now use me~"
+			);
 			c3.stop();
 		});
 		c3.on("end", (c) => {

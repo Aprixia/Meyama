@@ -42,7 +42,9 @@ module.exports = class MeyamaClient extends Discord.Client {
 				this.commands.get("setup").run(m);
 			} else {
 				m.s(
-					`My prefix here is \`${this.db.get(m.guild.id + ".config.prefix")}\``
+					`My prefix here is \`${this.db.get(
+						m.guild.id + ".config.prefix"
+					)}\``
 				);
 			}
 		}
