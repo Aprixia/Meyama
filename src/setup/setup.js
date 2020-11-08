@@ -1,13 +1,5 @@
-const { has } = require("lodash");
-const cmds = require("../Structures/Commands");
-module.exports = class Setup extends cmds {
-	constructor() {
-		super({
-			name: "setup",
-			description: "Redo the setup",
-		});
-	}
-	async run(msg) {
+module.exports = class Setup {
+  constructor (msg) {
 		if (!msg.m.permissions.has("MANAGE_GUILD"))
 			return msg.s(
 				"Woops, you need the Manage Server permission to do this!"

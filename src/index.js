@@ -33,19 +33,12 @@ module.exports = class MeyamaClient extends Discord.Client {
 		if (m.author.bot || m.webhookId || !m.guild) return;
 		if (
 			m.content === `<@${m.client.user.id}>` ||
-			m.content === `<@!${m.client.user.id}>`
-		) {
+			m.content === `<@!${m.client.user.id}>`) {
 			if (!this.db.get(`${m.g.id}.setupComplete`)) {
-				m.s(
-					"Looks like I'm not ready to be used here, launching my setup..."
-				).then((msg) => msg.delete({ timeout: 5000 }));
-				this.commands.get("setup").run(m);
+				m.s("Looks like I'm not ready to be used here, launching  one-time setup...").then((msg) => msg.delete({ timeout: 5000 }));
+				new (require("./setup/setup"))(msg)
 			} else {
-				m.s(
-					`My prefix here is \`${this.db.get(
-						m.guild.id + ".config.prefix"
-					)}\``
-				);
+				m.s(`My prefix here is \`${this.db.get(m.guild.id + ".config.prefix")}\``);
 			}
 		}
 		const p = this.db.get(m.guild.id + ".config.prefix");

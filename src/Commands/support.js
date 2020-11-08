@@ -8,6 +8,11 @@ module.exports = class Support extends cmds {
 	}
 
 	async run(msg) {
-		msg.s("https://discord.gg/xNKa5Mr");
+		msg.s({
+			embed: {
+				description:
+					"Wanna join my support server? Nice~ Please click [this link](https://discord.gg/xNKa5Mr)",
+			},
+		});
 	}
 };

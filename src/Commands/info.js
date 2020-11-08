@@ -14,7 +14,7 @@ module.exports = class Info extends cmds {
 				fields: [
 					{
 						name: "Who made me?",
-						value: `It's Lumap#0001! What a cutie~`,
+						value: `It's ${(await msg.client.users.fetch("635383782576357407")).tag}! What a cutie~`,
 						inline: true,
 					},
 					{
