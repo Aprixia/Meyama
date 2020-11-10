@@ -10,12 +10,22 @@ module.exports = class Eval extends cmds {
         });
     }
 
-    async run(msg, args) {
+    async run(msg) {
+        if (!msg.args.join(" ")) return await msg.send(`I can't eval the air!`);
         try {
-            let evaled = await eval(args.join(" "));
-            msg.s(evaled, { code: "js" });
-        } catch (e) {
-            msg.s(e);
+            let evaled = require("util").inspect(
+                await eval(msg.args.join(" "))
+            );
+            let options = {};
+            if (evaled) {
+                if (evaled.length > 2000) evaled = evaled.sliceEvery(2000)[0];
+                if (!evaled.toString().startsWith("```js\n"))
+                    options = { code: "js" };
+            }
+            await msg.c.send(evaled, options);
+        } catch (err) {
+            console.log(err);
+            await msg.c.send(err, { code: "js" });
         }
     }
 };

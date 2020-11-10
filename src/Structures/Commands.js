@@ -1,15 +1,15 @@
 module.exports = class Command {
     constructor({
-        name = null,
+        name,
         description = "No description provided",
-        usage = "No specific usage",
+        subcommands = new Array(),
         owner = false,
         aliases = new Array(),
     }) {
         this.help = {
             name,
             description,
-            usage,
+            subcommands,
             owner,
             aliases,
         };

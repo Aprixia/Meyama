@@ -12,12 +12,13 @@ module.exports = class Help extends cmds {
     async run(msg) {
         let help = "";
         msg.client.commands.forEach((c) => {
-            if (c.help.owner) {} else {
+            if (c.help.owner) {
+            } else {
                 help += `**${c.help.name}**:\n> **Description:** ${
-					c.help.description
-				}\n> **Usage:** ${c.help.usage}\n> **Aliases:** ${
-					c.help.aliases.join(", ") || "None"
-				}\n\n`;
+                    c.help.description
+                }\n> **Subcommands:** ${
+                    c.help.subcommands.join(", ") || "None"
+                }\n> **Aliases:** ${c.help.aliases.join(", ") || "None"}\n\n`;
             }
         });
         msg.s(

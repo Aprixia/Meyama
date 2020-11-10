@@ -24,17 +24,17 @@ module.exports = class Ping extends cmds {
         let e = new MessageEmbed();
         e.setTitle(`${role.name}`).setDescription(
             `**ID:** ${role.id}\n**Member Count:** ${
-				role.members.size
-			}\n**Hex Color:** #${role.color.toString(16)}`
+                role.members.size
+            }\n**Hex Color:** #${role.color.toString(16)}`
         );
 
         let permlist = Object.keys(perms);
         permlist.forEach((p) => {
             e.addField(
                 p,
-                perms[p] ?
-                "<:checkmark:767664519643791381>" :
-                "<:crossmark:767664506863353877>",
+                perms[p]
+                    ? "<:checkmark:767664519643791381>"
+                    : "<:crossmark:767664506863353877>",
                 true
             );
         });
