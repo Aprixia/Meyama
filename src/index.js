@@ -48,8 +48,8 @@ module.exports = class MeyamaClient extends Discord.Client {
 			this.commands.get(cont[0]) ||
 			this.commands.get(this.aliases.get(cont[0]));
 		if (!c) return;
-		if (c.owner) {
-			if (m.author.id !== this.config.ownerID) return;
+		if (c.help.owner) {
+			if (m.author.id !== m.client.config.ownerID) return;
 		}
 		const args = cont.slice(1);
 		try {
