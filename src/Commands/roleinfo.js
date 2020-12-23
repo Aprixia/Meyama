@@ -1,28 +1,29 @@
 const cmds = require("../Structures/Commands");
 const { MessageEmbed } = require("discord.js");
-module.exports = class Ping extends cmds {
+module.exports = class Role extends cmds {
     constructor() {
         super({
-            name: "role",
+            name: "roleinfo",
             description: "Get the details of a role",
         });
     }
 
-    async run(message, args) {
-        if (!args[0])
+    async run(message) {
+        let msg=message;
+        if (!msg.args[0])
             return msg.s(
                 "<:crossmark:767664506863353877> Woops, you need to provide a role name."
             );
         let role = message.guild.roles.cache.find((r) =>
-            r.name.toLowerCase().includes(args.join(" ").toLowerCase())
+            r.name.toLowerCase().includes(msg.args.join(" ").toLowerCase())
         );
         if (!role)
             return msg.s(
                 "<:crossmark:767664506863353877> Woops, I cannot find that role"
             );
         let perms = role.permissions.serialize();
-        let e = new MessageEmbed();
-        e.setTitle(`${role.name}`).setDescription(
+        let e = new MessageEmbed()
+        .setTitle(`${role.name}`).setDescription(
             `**ID:** ${role.id}\n**Member Count:** ${
                 role.members.size
             }\n**Hex Color:** #${role.color.toString(16)}`

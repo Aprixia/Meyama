@@ -1,19 +1,45 @@
 let c = new (require("./src/index"))(require("./config.json").token, {
     shards: [0],
-    fetchAllUsers: true,
+    fetchAllMembers: true,
 });
 c.on("ready", () => {
+    if (c.user.id === "760125006428241952") require("./src/setup/dbl")(c);
     console.log("Ready!");
     c.user.setPresence({
         status: "online",
-        activity: { name: "you! How scary~", type: "WATCHING" },
+        activity: {
+            name: `${c.users.cache.size} cuties in ${c.guilds.cache.size} servers~`,
+            type: "WATCHING",
+        },
     });
     setInterval(() => {
         c.user.setPresence({
             status: "online",
-            activity: { name: "you! How scary~", type: "WATCHING" },
+            activity: {
+                name: `${c.users.cache.size} cuties in ${c.guilds.cache.size} servers~`,
+                type: "WATCHING",
+            },
         });
     }, 180000);
+});
+
+c.on("guildCreate", (_) => {
+    c.user.setPresence({
+        status: "online",
+        activity: {
+            name: `${c.users.cache.size} cuties in ${c.guilds.cache.size} servers~`,
+            type: "WATCHING",
+        },
+    });
+});
+c.on("guildDelete", (_) => {
+    c.user.setPresence({
+        status: "online",
+        activity: {
+            name: `${c.users.cache.size} cuties in ${c.guilds.cache.size} servers~`,
+            type: "WATCHING",
+        },
+    });
 });
 c.on("message", (msg) => {
     c.message(msg);
@@ -25,8 +51,7 @@ c.on("messageUpdate", (oldMsg, msg) => {
 
 c.on("messageReactionAdd", (reaction, user) => {
     let r = c.db.get(
-        `${reaction.message.guild.id}.rr.${reaction.message.id}.${
-            reaction.emoji.id || reaction.emoji.name
+        `${reaction.message.guild.id}.rr.${reaction.message.id}.${reaction.emoji.id || reaction.emoji.name
         }`
     );
     if (!r) return;
@@ -39,8 +64,7 @@ c.on("messageReactionAdd", (reaction, user) => {
 
 c.on("messageReactionRemove", (reaction, user) => {
     let r = c.db.get(
-        `${reaction.message.guild.id}.rr.${reaction.message.id}.${
-            reaction.emoji.id || reaction.emoji.name
+        `${reaction.message.guild.id}.rr.${reaction.message.id}.${reaction.emoji.id || reaction.emoji.name
         }`
     );
     if (!r) return;
@@ -105,18 +129,22 @@ c.on("guildMemberRemove", (member) => {
 
 c.on("guildMemberAdd", (member) => {
     if (
-        !c.db.get(`${member.guild.id}.config.saveRoles`) ||
-        !c.db.get(`${member.guild.id}.config.roleAtJoin`)
+        !c.db.get(`${member.guild.id}.config.saveRoles`)
     )
         return;
-    try {
-        member.roles.add(c.guilds.get(`${member.guild.id}.config.roleAtJoin`));
-    } catch {}
     let roles = c.db.get(`${member.guild.id}.${member.user.id}.backupRoles`);
     if (!roles) return;
-    roles.forEach((r) => {
-        try {
-            member.roles.add(r);
-        } catch {}
-    });
+    member.roles.add(roles.filter(c => member.guild.roles.cache.has(c)))
 });
+
+c.on("guildMemberUpdate",async (_,newMember) => {
+    let mem = await c.api.guilds[newMember.guild.id].members[newMember.user.id].get()
+    console.log(mem)
+    if (!mem.pending) {
+        if (!c.db.get(`${newMember.guild.id}.config.roleAtJoin`)) return;
+        if (newMember.roles.cache.has(c.db.get(`${newMember.guild.id}.config.roleAtJoin`))) return;
+        try {
+            newMember.roles.add(c.db.get(`${newMember.guild.id}.config.roleAtJoin`))
+        } catch { }
+    }
+})

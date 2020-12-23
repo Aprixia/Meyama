@@ -12,6 +12,11 @@ module.exports = class Eval extends cmds {
 
     async run(msg) {
         if (!msg.args.join(" ")) return await msg.send(`I can't eval the air!`);
+        if (msg.args[0] == "-s") {
+            var silent = true;
+            delete msg.args[0];
+            msg.args = msg.args.filter((h) => h);
+        }
         try {
             let evaled = require("util").inspect(
                 await eval(msg.args.join(" "))
@@ -22,7 +27,7 @@ module.exports = class Eval extends cmds {
                 if (!evaled.toString().startsWith("```js\n"))
                     options = { code: "js" };
             }
-            await msg.c.send(evaled, options);
+            if (!silent) await msg.c.send(evaled, options);
         } catch (err) {
             console.log(err);
             await msg.c.send(err, { code: "js" });

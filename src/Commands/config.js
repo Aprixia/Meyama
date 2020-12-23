@@ -16,8 +16,7 @@ module.exports = class Config extends cmds {
     async run(msg) {
         let config = msg.client.db.get(`${msg.g.id}.config`);
         if (!msg.args[0]) {
-            msg.s({
-                embed: {
+            msg.s({ embed: {
                     title: "Meyama's config for this server",
                     fields: [
                         {
