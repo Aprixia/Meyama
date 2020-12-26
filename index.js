@@ -138,10 +138,14 @@ c.on("guildMemberAdd", (member) => {
 });
 
 c.on("guildMemberUpdate",async (_,newMember) => {
+    if (newMember.bot) return;
+    if (newMember.roles.cache.size !== 0) return;
+    if (newMember.guild.ownerID === newMember.user.id) return;d
+    if (!newMember.guild.me.hasPermission("MANAGE_ROLES")) return;
+    if (!c.db.get(`${newMember.guild.id}.config.roleAtJoin`)) return;
+    if (newMember.guild.roles.cache.get(c.db.get(`${newMember.guild.id}.config.roleAtJoin`)).comparePositionTo(newMember.guild.me.roles.highest) >= 0) return;
     let mem = await c.api.guilds[newMember.guild.id].members[newMember.user.id].get()
-    console.log(mem)
     if (!mem.pending) {
-        if (!c.db.get(`${newMember.guild.id}.config.roleAtJoin`)) return;
         if (newMember.roles.cache.has(c.db.get(`${newMember.guild.id}.config.roleAtJoin`))) return;
         try {
             newMember.roles.add(c.db.get(`${newMember.guild.id}.config.roleAtJoin`))
